@@ -8,6 +8,11 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import javax.security.auth.login.LoginException;
 import java.util.HashMap;
 
+/**
+ * Creating by Aven at 06.12.2017
+ *
+**/
+
 public class Main
 {
 	private static final HashMap commands = new HashMap();
