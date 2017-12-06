@@ -5,6 +5,11 @@ import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+/**
+ * Creating by Aven at 06.12.2017
+ *
+**/
+
 public class Listener extends ListenerAdapter
 {
     @Override
