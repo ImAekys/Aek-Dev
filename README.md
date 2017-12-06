@@ -1,2 +1,1 @@
-# Aek-Dev
-Aek'Dev ,le bot dev d'Aek 
+Bienvenue sur le repo du bot Aek
