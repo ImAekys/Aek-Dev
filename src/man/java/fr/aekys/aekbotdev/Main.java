@@ -1,63 +1,47 @@
 package fr.neutronstars.botdiscord;
 
-import java.util.Scanner;
-
-import javax.security.auth.login.LoginException;
-
-import fr.neutronstars.botdiscord.command.CommandMap;
-import fr.neutronstars.botdiscord.event.BotListener;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.OnlineStatus;
+import fr.aekys.commands.*;
+import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
-public class Main implements Runnable{
+import javax.security.auth.login.LoginException;
+import java.util.HashMap;
 
-	private final JDA jda;
-	private final CommandMap commandMap = new CommandMap(this);
-	private final Scanner scanner = new Scanner(System.in);
-	
-	private boolean running;
-	
-	public BotDiscord() throws LoginException, IllegalArgumentException, RateLimitedException {
-		jda = new JDABuilder(AccountType.BOT).setToken("Token").buildAsync();
-		jda.addEventListener(new BotListener(commandMap));
-		jda.getPresence().setGame(Game.of("=help | Bot test | 1 serveur"));
-		jda.getPresence().setStatus(OnlineStatus.IDLE);
-		System.out.println("Bot connected.");		
-	}
-	
+public class Main
+{
+	private static final HashMap commands = new HashMap();
+	private static final CommandParser parser = new ComamndParser();
+	private final JDA jda;	
 	public JDA getJda() {
 		return jda;
 	}
 	
-	public void setRunning(boolean running) {
-		this.running = running;
-	}
-	
-	@Override
-	public void run() {
-		running = true;
-		
-		while (running) {
-			if(scanner.hasNextLine()) commandMap.commandConsole(scanner.nextLine());
-		}
-		
-		scanner.close();
-		System.out.println("Bot stopped.");
-		jda.shutdown();
-		commandMap.save();
-		System.exit(0);
-	}
-	
 	public static void main(String[] args) {
 		try {
-			Main botDiscord = new Main();
-			new Thread(botDiscord, "bot").start();
+		jda = new JDABuilder(AccountType.BOT).setToken("Token").buildBlocking();
+		jda.addEventListener(new BotListener());
+		jda.getPresence().setGame(Game.of("=help | Bot test | 1 serveur"));
+		jda.getPresence().setStatus(OnlineStatus.IDLE);
 		} catch (LoginException | IllegalArgumentException | RateLimitedException e) {
 			e.printStackTrace();
 		}
 	}
+	
+    public static void handleCommand(CommandParser.CommandContainer cmd)
+    {
+        if(commands.containsKey(cmd.invoke))
+        {
+            boolean safe = ((Command)commands.get(cmd.invoke)).called(cmd.args, cmd.event);
+
+            if(safe)
+            {
+                ((Command)commands.get(cmd.invoke)).action(cmd.args, cmd.event);
+                System.out.println(cmd.event.getAuthor().getName()+cmd.event.getAuthor().getDiscriminator()+" a exécuté la commande "+cmd.event.getMessage().getContent()+".");
+                ((Command)commands.get(cmd.invoke)).executed(safe, cmd.event);
+            } else {
+                ((Command)commands.get(cmd.invoke)).executed(safe, cmd.event);
+            }
+        }
+    }
 }
