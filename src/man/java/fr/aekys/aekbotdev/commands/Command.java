@@ -1,5 +1,7 @@
 package fr.aekys.aekbotdev.commands;
 
+import net.dv8tion.jda.core.events.MessageReceivedEvent;
+
 public interface Command
 {
     public boolean called(String args[], MessageReceivedEvent event);
