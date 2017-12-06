@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
-public class BotDiscord implements Runnable{
+public class Main implements Runnable{
 
 	private final JDA jda;
 	private final CommandMap commandMap = new CommandMap(this);
@@ -54,7 +54,7 @@ public class BotDiscord implements Runnable{
 	
 	public static void main(String[] args) {
 		try {
-			BotDiscord botDiscord = new BotDiscord();
+			Main botDiscord = new Main();
 			new Thread(botDiscord, "bot").start();
 		} catch (LoginException | IllegalArgumentException | RateLimitedException e) {
 			e.printStackTrace();
